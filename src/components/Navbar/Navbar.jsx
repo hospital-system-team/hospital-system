@@ -1,86 +1,85 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Navbar.css';
-import logo from '../../assets/images/logo.png'; 
 import {
   FiSearch,
   FiBell,
-  FiMessageCircle,
   FiSun,
   FiMoon,
   FiX,
+  FiUser,
 } from 'react-icons/fi';
 
 function Navbar() {
   const [darkMode, setDarkMode] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <nav className="Navbar w-full px-4 sm:px-8 py-3 flex items-center justify-between bg-[var(--main-color)] text-[var(--text-color)] dark:bg-[var(--main-color)] dark:text-[var(--text-color)] shadow-md transition-colors duration-300 z-50 relative">
-
-      {/* Logo */}
-      <div className="flex items-center">
-        <img src={logo} alt="Logo" className="w-20" />
-      </div>
-
-      {/* Icons & Search */}
-      <div className="flex items-center gap-3 sm:gap-4 relative">
-
+    <nav className="Navbar w-full px-4 sm:px-8 h-16 flex items-center justify-between bg-[var(--main-color)] text-[var(--text-color)] shadow-md transition-colors duration-300 z-50 relative">
+      
+      {/*  Search Input */}
+      <div className="flex items-center gap-3 w-full">
         {/* Mobile Search Toggle */}
-        <div className="sm:hidden relative">
+        <div className="sm:hidden">
           <button
             onClick={() => setShowSearch(!showSearch)}
-            className="iconsNav text-[var(--text-color)] hover:text-[var(--background-color)] text-2xl transition duration-150 relative z-50"
+            className="iconsNav text-2xl transition duration-150 relative z-50"
           >
             {showSearch ? <FiX /> : <FiSearch />}
           </button>
+        </div>
 
-          {/* Mobile Search Box */}
-          {showSearch && (
-            <div className="mobileSearchBox">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  autoFocus
-                  ref={searchRef}
-                  className="searchInput"
-                />
-                <FiSearch className="searchIcon" />
-              </div>
+        {/* Mobile Search Input */}
+        {showSearch && (
+          <div className="sm:hidden absolute left-0 top-full w-full bg-white p-3 z-40 shadow">
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search..."
+                autoFocus
+                ref={searchRef}
+                className="w-full pl-10 pr-4 py-2 rounded border outline-none text-black"
+              />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Desktop Search */}
-        <div className="containSearch hidden sm:block relative">
-          <input type="text" placeholder="Search..." className="searchInput" />
-          <FiSearch className="searchIcon" />
+        {/* Desktop Search Input */}
+        <div className="hidden sm:block w-[250px] relative">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="w-full pl-10 pr-4 py-2 rounded bg-white text-black outline-none"
+          />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         </div>
+      </div>
 
-        {/* Notifications */}
-        <div className="relative">
-          <button className="iconsNav text-2xl relative">
-            <FiBell />
-            <span className="absolute -bottom-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full leading-none">
-              0
-            </span>
-          </button>
-        </div>
-
-        {/* Messages */}
-        <div className="relative">
-          <button className="iconsNav text-2xl relative">
-            <FiMessageCircle />
-            <span className="absolute -bottom-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full leading-none">
-              0
-            </span>
-          </button>
-        </div>
+      {/* Icons */}
+      <div className="flex items-center gap-4 relative">
 
         {/* Theme Toggle */}
         <button
@@ -89,6 +88,40 @@ function Navbar() {
         >
           {darkMode ? <FiSun /> : <FiMoon />}
         </button>
+
+        {/* Notifications Icon */}
+        <div className="relative">
+          <button className="iconsNav text-2xl relative">
+            <FiBell />
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full leading-none">
+              0
+            </span>
+          </button>
+        </div>
+
+        {/* Login Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="iconsNav text-2xl"
+          >
+            <FiUser />
+          </button>
+
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-40 bg-white text-[var(--text-color)] rounded shadow-md z-50">
+              <ul className="py-2">
+
+                <li className="px-4 py-2 cursor-pointer hover:bg-[var(--background-color)] hover:text-[var(--main-color)]">
+                  Settings
+                </li>
+                <li className="px-4 py-2 cursor-pointer hover:bg-[var(--background-color)] hover:text-[var(--main-color)]">
+                  Logout
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
