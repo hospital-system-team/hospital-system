@@ -13,7 +13,7 @@ function ViewDialog() {
             <div className="space-y-3 text-gray-700">
               <div className="w-[200px] h-[200px] overflow-hidden m-auto mb-4">
                 <img
-                  src={viewData.Img}
+                  src={viewData.image}
                   alt={viewData.name}
                   className="w-full h-full object-cover rounded-full"
                 />

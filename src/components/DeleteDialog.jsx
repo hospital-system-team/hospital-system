@@ -1,7 +1,7 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { useContext } from "react";
 import { DeleteDialogContext } from "../Context/DeleteDialogContext";
-function DeleteDialog() {
+function DeleteDialog({onDeleteFromUI}) {
   const {isDeleteDialogOpen,deleteData,deleteType,closeDeleteDialog,handleDelete} = useContext(DeleteDialogContext);
   return (
     <Dialog open={isDeleteDialogOpen} onClose={closeDeleteDialog} className="relative z-50">
@@ -21,7 +21,7 @@ function DeleteDialog() {
             </button>
             <button
               onClick={() => {
-                handleDelete(deleteData?.id);
+                handleDelete(deleteData?.id , onDeleteFromUI);
                 console.log('from button ' ,deleteData?.id);
                 closeDeleteDialog();
               }}

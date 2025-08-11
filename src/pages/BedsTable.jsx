@@ -1,5 +1,6 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { IoTrashSharp, IoPencil, IoAddSharp } from "react-icons/io5";
+import supabase from "../Supabase/supabase_config";
 import EditDialog from '../components/EditDialog';
 import DeleteDialog from '../components/DeleteDialog';
 import { EditDialogContext } from '../Context/EditDialogContext';
@@ -7,12 +8,42 @@ import { DeleteDialogContext } from '../Context/DeleteDialogContext';
 import AddDialog from '../components/AddDialog';
 import { AddDialogContext } from '../Context/AddDialogContext';
 function BedsTable() {
-  const { openDialog , beds } = useContext(EditDialogContext);
-  const {openDeleteDialog} = useContext(DeleteDialogContext);
+  const [beds, setBeds] = useState([]);
+  const { openDeleteDialog } = useContext(DeleteDialogContext);
   const { openAddDialog } = useContext(AddDialogContext);
-    const handleAddBed = (newBed) => {
-    console.log("Bed Added:", newBed);
+  const { openDialog } = useContext(EditDialogContext); 
+  const access_token = localStorage.getItem("access_token");
+  const refresh_token = localStorage.getItem("refresh_token");
+  async function fetchBeds() {
+    await supabase.auth.setSession({
+      access_token: access_token,
+      refresh_token: refresh_token,
+    });
+    const { data, error } = await supabase.from('beds').select('*');
+    if (error) {
+      console.error('Error fetching Nurses:', error.message);
+    } else {
+      setBeds(data);
+      console.log('data:', data);
+    }
+  }
+  useEffect(() => {
+    fetchBeds();
+  }, []);
+  const addBedToUI = (newBed) => {
+  setBeds((prev) => [newBed, ...prev]);
+};
+  const removeBedFromUI = (id) => {
+    setBeds((prev) => prev.filter((bed) => bed.id !== id));
   };
+  const updateBedsInUI = (updatedBed) => {
+  setBeds((prev) =>
+    prev.map((bed) =>
+      bed.id === updatedBed.id ? updatedBed : bed
+    )
+  );
+};
+
   return (
     <section className="flex justify-center p-6">
       <div className="container w-full max-w-5xl rounded-xl p-6 bg-white shadow">
@@ -24,11 +55,10 @@ function BedsTable() {
             <IoAddSharp color="white" />
           </button>
         </div>
-        <div className="overflow-x-auto rounded border border-gray-300 shadow-sm ">
-          <table className="min-w-full divide-y-2 border-separate border-spacing-y-4">
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm rounded-lg overflow-hidden">
             <thead className="bg-[#1E90FF] text-white">
               <tr>
-                <th className="px-6 py-4 whitespace-nowrap font-medium">Bed ID</th>
                 <th className="px-6 py-4 whitespace-nowrap font-medium">Room</th>
                 <th className="px-6 py-4 whitespace-nowrap font-medium">Status</th>
                 <th className="px-6 py-4 whitespace-nowrap font-medium">Action</th>
@@ -37,9 +67,10 @@ function BedsTable() {
             <tbody className="divide-y divide-gray-200">
               {beds.map((bed) => (
                 <tr key={bed.id} className="*:text-gray-900 *:first:font-medium *:text-center ">
-                  <td className="px-6 py-4 whitespace-nowrap">{bed.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{bed.room}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{bed.status}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {bed.is_occupied ? "Occupied" : "Available"}
+                  </td>
                   <td className="px-6 py-2 whitespace-wrap flex gap-2 justify-center">
                     <button
                       className="w-[40px] h-[30px] bg-[#f00] text-white flex items-center justify-center gap-2 px-3 py-2 rounded hover:bg-red-600 cursor-pointer"
@@ -60,11 +91,9 @@ function BedsTable() {
           </table>
         </div>
       </div>
-      <AddDialog
-        onSubmit={handleAddBed}
-      />
-      <EditDialog />
-      <DeleteDialog/>
+      <AddDialog onAddSuccess={addBedToUI}/>
+      <EditDialog onUpdateInUI={updateBedsInUI} />
+      <DeleteDialog onDeleteFromUI={removeBedFromUI} />
     </section>
   )
 }
