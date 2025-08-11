@@ -13,29 +13,41 @@ import { AddDialogContext } from "../Context/AddDialogContext";
 function NursesTable() {
   const [nurses, setNurses] = useState([]);
   const { openDialog } = useContext(EditDialogContext);
-  const {openDeleteDialog} = useContext(DeleteDialogContext);
+  const { openDeleteDialog , closeDeleteDialog , isDeleteDialogOpen } = useContext(DeleteDialogContext);
   const { openViewDialog } = useContext(ViewDialogContext);
   const { openAddDialog } = useContext(AddDialogContext);
+  const access_token = localStorage.getItem("access_token");
+  const refresh_token = localStorage.getItem("refresh_token");
   async function fetchNurses() {
+    await supabase.auth.setSession({
+      access_token: access_token,
+      refresh_token: refresh_token,
+    });
     const { data, error } = await supabase.from('nurses').select('*');
     if (error) {
-      console.error('Error fetching Nurses:', error);
+      console.error('Error fetching Nurses:', error.message);
     } else {
       setNurses(data);
       console.log('data:', data);
     }
   }
-  async function handleAddNurse(newNurse) {
-    const { data, error } = await supabase.from('nurses').insert([newNurse]);
-    if (error) {
-      console.error('Error adding nurse:', error);
-    } else {
-      setNurses((prev) => [...prev, ...data]);
-    }
-  }
-  useEffect(() => {
+    useEffect(() => {
     fetchNurses();
   }, []);
+  const addNurseToUI = (newNurse) => {
+  setNurses((prev) => [newNurse, ...prev]);
+};
+  const removeNurseFromUI = (id) => {
+    setNurses((prev) => prev.filter((nurse) => nurse.id !== id));
+  };
+  const updateNurseInUI = (updatedNurse) => {
+  setNurses((prev) => {
+    console.log('prev:', prev, 'updatedNurse:', updatedNurse);
+    return prev.map((nurse) =>
+      nurse.id === updatedNurse.id ? updatedNurse : nurse
+    );
+  });
+};
   return (
     <section className="flex justify-center p-6">
       <div className="container w-full max-w-5xl rounded-xl p-6 bg-white shadow">
@@ -50,10 +62,10 @@ function NursesTable() {
         {nurses.length === 0 ? (
           <p className="text-center text-gray-500">No nurses found.</p>
         ) : (
-          <div className="overflow-x-auto rounded border border-gray-300 shadow-sm ">
-            <table className="min-w-full divide-y-2 border-separate border-spacing-y-4">
+          <div className="overflow-x-auto ">
+            <table className="min-w-full text-sm rounded-lg overflow-hidden">
               <thead className="bg-[#1E90FF] text-white">
-                <tr >
+                <tr>
                   <th className="px-6 py-4 whitespace-nowrap font-medium">Name</th>
                   <th className="px-6 py-4 whitespace-nowrap font-medium">Phone</th>
                   <th className="px-6 py-4 whitespace-nowrap font-medium">Shift</th>
@@ -61,7 +73,9 @@ function NursesTable() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {nurses.map((nurse) => (<tr key={nurse.id} className="*:text-gray-900 *:first:font-medium *:text-center ">
+                {nurses && nurses.length > 0 && nurses.map((nurse) =>{ 
+                  console.log('nursemap:', nurse);
+                  return(<tr key={nurse.id} className="*:text-gray-900 *:first:font-medium *:text-center ">
                   <td className="px-6 py-2 whitespace-nowrap">{nurse.name}</td>
                   <td className="px-6 py-2 whitespace-nowrap">{nurse.phone}</td>
                   <td className="px-6 py-2 whitespace-nowrap">{nurse.shift}</td>
@@ -76,17 +90,15 @@ function NursesTable() {
                       <IoEyeSharp className="text-lg" />
                     </button>
                   </td>
-                </tr>))}
+                </tr>)})}
               </tbody>
             </table>
           </div>
         )}
       </div>
-      <AddDialog
-        onSubmit={handleAddNurse}
-      />
-      <EditDialog />
-      <DeleteDialog />
+      <AddDialog onAddSuccess={addNurseToUI} />
+      <EditDialog onUpdateInUI={updateNurseInUI} />
+      <DeleteDialog onDeleteFromUI={removeNurseFromUI}/>
       <ViewDialog />
     </section>
   )

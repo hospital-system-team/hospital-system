@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
+import supabase from "../Supabase/supabase_config";
 export const DeleteDialogContext = createContext();
-
 
 function DeleteDialogProvider(props) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -18,17 +18,23 @@ function DeleteDialogProvider(props) {
     setDeleteData(null);
     setDeleteType("");
   };
-  const handleDelete = async (id) => {
+const handleDelete = async (id, onDeleteFromUI) => {
     try {
-      if (deleteType === "bed") {
-        console.log(`Deleting bed with ID: ${id}`);
-      } else if (deleteType === "nurse") {
-        console.log(`Deleting nurse with ID: ${id}`);
-        
+      await supabase.auth.setSession({
+        access_token: localStorage.getItem("access_token"),
+        refresh_token: localStorage.getItem("refresh_token"),
+      });
+      const { error } = await supabase
+        .from(deleteType === "nurse" ? "nurses" : "beds")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+      console.log(` Deleted ${deleteType} with ID: ${id}`);
+      if (onDeleteFromUI) {
+        onDeleteFromUI(id);
       }
-      console.log(`Deleted ${deleteType} with ID: ${id}`);
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error(" Delete error:", error.message);
     }
   };
   return (

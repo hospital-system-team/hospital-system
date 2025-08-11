@@ -1,32 +1,46 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { EditDialogContext } from '../Context/EditDialogContext';
-function EditDialog() {
-  const { isDialogOpen, closeDialog, editType, editData , setBeds } = useContext(EditDialogContext);  {/* Destructure the context values */ }
-  const [bedId, setBedId] = useState('');
+function EditDialog({ onUpdateInUI }) {
+  const { isDialogOpen, closeDialog, editType, editData,handleEdit } = useContext(EditDialogContext); {/* Destructure the context values */ }
+  // State for bed fields
   const [bedStatus, setBedStatus] = useState('');
   const [bedRoom, setBedRoom] = useState('');
+  // State for nurse fields
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [shift, setShift] = useState('');
   useEffect(() => {
-    if (editType === "bed" && editData) {
-      setBedId(editData.id || '');
-      setBedStatus(editData.status || '');
-      setBedRoom(editData.room || '');
+    // Set initial values based on editType and editData
+    // If editType is "bed", set bed fields; if "nurse", set nurse fields
+  if (editType === "bed" && editData) {
+    setBedStatus(editData.status || '');
+    setBedRoom(editData.room || '');
+  } else if (editType === "nurse" && editData) {
+    setName(editData.name || '');
+    setPhone(editData.phone || '');
+    setShift(editData.shift || '');
+  }
+}, [editData, editType]);
+  // Handle form submission
+  // This function will be called when the form is submitted
+  async function handleSubmit(e) {
+    e.preventDefault();// prevent page reload
+    // Prepare the updated item based on editType
+    const updatedItem = editType === "nurse"
+      ? { id: editData.id, name, phone, shift }
+      : { id: editData.id, room: bedRoom, is_occupied: bedStatus === "occupied" };
+     // Call the handleEdit function from the context to update in Database
+      try {
+      const updatedData = await handleEdit(updatedItem);
+      if (updatedData && onUpdateInUI) {    // If the update is successful, call onUpdateInUI callback if provided
+        onUpdateInUI(updatedData);
+      }
+    } catch (error) {
+      console.error("Error editing item:", error);
     }
-  }, [editData, editType]);
-  function handleSubmit(e) {
-    e.preventDefault();
 
-    if (editType === "bed") {
-      setBeds((prevBeds) =>
-        prevBeds.map((bed) =>
-          bed.id === editData.id
-            ? { ...bed, id: bedId, status: bedStatus, room: bedRoom }
-            : bed
-        )
-      );
-    }
-
-    closeDialog();
+    closeDialog(); // Close the dialog after successful update
   }
 
   return (
@@ -44,26 +58,27 @@ function EditDialog() {
                   type="text"
                   placeholder="Name"
                   className="w-full border p-2 rounded"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
                 <input
                   type="text"
                   placeholder="Phone"
                   className="w-full border p-2 rounded"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
-                <select className="w-full border p-2 rounded">
+                <select
+                  className="w-full border p-2 rounded"
+                  value={shift}
+                  onChange={(e) => setShift(e.target.value)}
+                >
                   <option value="am">Morning</option>
                   <option value="pm">Evening</option>
                 </select>
               </>
             ) : (
               <>
-                <input
-                  type="text"
-                  placeholder="Bed ID"
-                  className="w-full border p-2 rounded"
-                  value={bedId}
-                  onChange={(e) => setBedId(e.target.value)}
-                />
                 <select
                   className="w-full border p-2 rounded"
                   value={bedStatus}
@@ -81,7 +96,6 @@ function EditDialog() {
                 />
               </>
             )}
-
             <div className="flex justify-end gap-2 pt-4">
               <button
                 onClick={closeDialog}
@@ -103,5 +117,4 @@ function EditDialog() {
     </Dialog>
   );
 }
-
 export default EditDialog
