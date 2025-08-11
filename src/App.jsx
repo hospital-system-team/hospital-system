@@ -1,22 +1,22 @@
 // src/App.jsx
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Layout from './Layout';
-import Home from './components/Home/Home';
-import Cases from './pages/Cases';
-import NursesTable from './pages/NursesTable';
-import BedsTable from './pages/BedsTable';
-import Doctors from './pages/DoctorsTable';
-import Patients from './pages/Patients';
-import SignIn from './pages/SignIn';
-import SignUp from './pages/SignUp';
-import ProtectedRoute from './components/ProtectedRoute';
-import AppProviders from './providers/AppProviders';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import Layout from "./Layout";
+import Home from "./components/Home/Home";
+import ProtectedRoute from "./components/ProtectedRoute";
+import BedsTable from "./pages/BedsTable";
+import Cases from "./pages/Cases";
+import Doctors from "./pages/Doctors";
+import NursesTable from "./pages/NursesTable";
+import Patients from "./pages/Patients";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import AppProviders from "./providers/AppProviders";
 
 // تعريف الراوتر
 const router = createBrowserRouter([
   {
-    path: '/signin',
+    path: "/signin",
     element: (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <SignIn />
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/signup',
+    path: "/signup",
     element: (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <SignUp />
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '',
+    path: "",
     element: (
       <ProtectedRoute>
         <Layout />
@@ -40,12 +40,12 @@ const router = createBrowserRouter([
     ),
     errorElement: <div className="text-center">Page not found</div>,
     children: [
-      { path: '', element: <Home /> },
-      { path: '/cases', element: <Cases /> },
-      { path: '/nurses', element: <NursesTable /> },
-      { path: '/beds', element: <BedsTable /> },
-      { path: '/doctors', element: <Doctors /> },
-      { path: '/patients', element: <Patients /> },
+      { path: "", element: <Home /> },
+      { path: "/cases", element: <Cases /> },
+      { path: "/nurses", element: <NursesTable /> },
+      { path: "/beds", element: <BedsTable /> },
+      { path: "/doctors", element: <Doctors /> },
+      { path: "/patients", element: <Patients /> },
     ],
   },
 ]);
@@ -56,7 +56,6 @@ function App() {
     <AppProviders>
       <main>
         <ToastContainer />
-
         <RouterProvider router={router} />
       </main>
     </AppProviders>

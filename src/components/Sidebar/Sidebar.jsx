@@ -1,61 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import {
-  FaHome,
-  FaUsers,
-  FaCog,
-  FaChartBar,
-  FaSignOutAlt,
-  FaBars,
-  FaAmbulance,
-  FaSignInAlt,
+  FaHome, FaUsers, FaCog, FaChartBar, FaSignOutAlt, FaBars,
+  FaAmbulance, FaSignInAlt, FaUserMd, FaProcedures,
+  FaNotesMedical, FaBed, FaUserNurse
 } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import useSidebarLogic from '../../hooks/useSidebarLogic';
 import './Sidebar.css';
-import supabase from '../../Supabase/supabase_config'; 
 
 const CustomSidebar = () => {
-  const [collapsed, setCollapsed] = useState(window.innerWidth < 1024);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
-
-  // Get user status on mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
-    };
-    checkAuth();
-
-    const handleResize = () => {
-      setCollapsed(window.innerWidth < 1024);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Logout handler
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setIsAuthenticated(false);
-    navigate('/signin');
-  };
+  const {
+    collapsed, isAuthenticated, handleLogout,
+    toggleSidebar, navigate
+  } = useSidebarLogic();
 
   return (
     <div className="sidebar-container h-screen overflow-hidden">
       <Sidebar
         collapsed={collapsed}
-        className="h-full bg-[var(--light-color)] text-[var(--text-color)] !border-none !shadow-none overflow-hidden"
+        className="h-full !border-none !shadow-none overflow-hidden transition-colors duration-300"
+        style={{
+          backgroundColor: 'var(--light-color)',
+          color: 'var(--text-color)',
+        }}
       >
-        {/* Logo and toggle */}
+        {/* Logo */}
         <div
-          className={`relative flex items-center justify-between bg-[var(--main-color)] ${
-            collapsed ? 'py-5 px-0 justify-center' : 'p-4'
-          }`}
+          className="relative flex items-center justify-between transition-colors duration-300"
+          style={{
+            backgroundColor: 'var(--main-color)',
+          }}
         >
           <h1
-            className={`glow-text animate-glow text-white font-bold tracking-wider transition-all duration-300 ${
-              collapsed ? 'text-base text-center w-full' : 'text-2xl'
+            className={`glow-text animate-glow font-bold tracking-wider text-white transition-all duration-300 ${
+              collapsed ? 'text-base text-center w-full py-5' : 'text-2xl p-4'
             }`}
           >
             Hospital
@@ -63,37 +41,56 @@ const CustomSidebar = () => {
 
           {!collapsed && (
             <FaBars
-              className="cursor-pointer text-white text-xl"
-              onClick={() => setCollapsed(!collapsed)}
+              className="cursor-pointer text-white text-xl mr-4"
+              onClick={toggleSidebar}
             />
           )}
         </div>
 
+        {/* Menu */}
         <Menu
           className="px-2 py-2 overflow-hidden"
           menuItemStyles={{
             button: {
               color: 'var(--text-color)',
-              opacity: 0.8,
-              transition: '0.3s',
+              backgroundColor: 'transparent',
+              opacity: 0.9,
+              transition: 'all 0.3s ease',
+              borderRadius: '8px',
+              marginBottom: '4px',
               '&:hover': {
                 backgroundColor: 'var(--background-color)',
                 opacity: 1,
               },
             },
-            label: {
-              color: 'var(--text-color)',
-            },
-            icon: {
-              color: 'var(--text-color)',
-              fontSize: '1.2rem',
+            label: { color: 'var(--text-color)' },
+            icon: { color: 'var(--text-color)', fontSize: '1.2rem' },
+            subMenuContent: {
+              backgroundColor: 'var(--light-color)',
+              padding: '0px',
+              borderRadius: '6px',
+              transition: 'background-color 0.3s ease',
+              '& .ps-menuitem-root': {
+                borderRadius: '6px',
+                marginBottom: '4px',
+                color: 'var(--text-color)',
+                transition: 'background-color 0.3s ease, color 0.3s ease',
+              },
+              '& .ps-menuitem-root:hover': {
+                backgroundColor: 'var(--main-color)',
+                color: '#fff',
+              },
+              '& .ps-menuitem-root:hover svg': {
+                color: '#fff',
+              },
             },
           }}
         >
           {collapsed && (
-            <MenuItem icon={<FaBars />} onClick={() => setCollapsed(!collapsed)} />
+            <MenuItem icon={<FaBars />} onClick={toggleSidebar} />
           )}
 
+          {/* Dashboard & Users */}
           <div className="space-y-1 mb-3 pb-3 border-b border-[var(--background-color)] border-opacity-20">
             <MenuItem icon={<FaHome />} onClick={() => navigate('/')}>
               Dashboard
@@ -103,19 +100,31 @@ const CustomSidebar = () => {
             </MenuItem>
           </div>
 
+          {/* Emergency Section */}
           <div className="space-y-1 mb-3 pb-3 border-b border-[var(--background-color)] border-opacity-20">
             <SubMenu label="Emergency" icon={<FaAmbulance />}>
-              <MenuItem onClick={() => navigate('/doctors')}>Doctors</MenuItem>
-              <MenuItem onClick={() => navigate('/patients')}>Patients</MenuItem>
-              <MenuItem onClick={() => navigate('/cases')}>Cases</MenuItem>
-              <MenuItem onClick={() => navigate('/beds')}>Beds</MenuItem>
-              <MenuItem onClick={() => navigate('/nurses')}>Nurses</MenuItem>
+              <MenuItem icon={<FaUserMd />} onClick={() => navigate('/doctors')}>
+                Doctors
+              </MenuItem>
+              <MenuItem icon={<FaProcedures />} onClick={() => navigate('/patients')}>
+                Patients
+              </MenuItem>
+              <MenuItem icon={<FaNotesMedical />} onClick={() => navigate('/cases')}>
+                Cases
+              </MenuItem>
+              <MenuItem icon={<FaBed />} onClick={() => navigate('/beds')}>
+                Beds
+              </MenuItem>
+              <MenuItem icon={<FaUserNurse />} onClick={() => navigate('/nurses')}>
+                Nurses
+              </MenuItem>
             </SubMenu>
             <MenuItem icon={<FaChartBar />} onClick={() => navigate('/analytics')}>
               Analytics
             </MenuItem>
           </div>
 
+          {/* Administration */}
           <div className="space-y-1 pt-2">
             <SubMenu label="Administration" icon={<FaCog />}>
               <MenuItem onClick={() => navigate('/')}>Control 1</MenuItem>
