@@ -1,4 +1,3 @@
-
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
@@ -6,13 +5,6 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import supabase from "../Supabase/supabase_config";
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate, Link } from 'react-router-dom';
-import supabase from '../Supabase/supabase_config';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import { toast } from 'react-toastify';
 
 const SignIn = () => {
   const navigate = useNavigate();
