@@ -4,8 +4,6 @@ import supabase from "../Supabase/supabase_config";
 
 export const DeleteDialogContext = createContext();
 
-
-
 function DeleteDialogProvider(props) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteData, setDeleteData] = useState(null);
@@ -25,45 +23,35 @@ function DeleteDialogProvider(props) {
     setDeleteType("");
     setOnDeleted(null);
   };
-const handleDelete = async (id, onDeleteFromUI) => {
+
+  const handleDelete = async (id, onDeleteFromUI) => {
     try {
+      // تفعيل جلسة supabase
       await supabase.auth.setSession({
         access_token: localStorage.getItem("access_token"),
         refresh_token: localStorage.getItem("refresh_token"),
       });
-      const { error } = await supabase
-        .from(deleteType === "nurse" ? "nurses" : "beds")
-        .delete()
-        .eq("id", id);
+
+      // الحذف من الجدول المناسب
+      const table =
+        deleteType === "nurse"
+          ? "nurses"
+          : deleteType === "doctor"
+          ? "doctors"
+          : "beds";
+
+      const { error } = await supabase.from(table).delete().eq("id", id);
       if (error) throw error;
-      console.log(` Deleted ${deleteType} with ID: ${id}`);
-      if (onDeleteFromUI) {
-        onDeleteFromUI(id);
-      }
-    } catch (error) {
-      console.error(" Delete error:", error.message);
 
-  const handleDelete = async (id) => {
-    try {
-      if (!id) return false;
+      console.log(`Deleted ${deleteType} with ID: ${id}`);
 
-      const access_token = localStorage.getItem("access_token");
-      const refresh_token = localStorage.getItem("refresh_token");
-      await supabase.auth.setSession({ access_token, refresh_token });
+      // تحديث الواجهة إذا فيه callback
+      if (onDeleteFromUI) onDeleteFromUI(id);
+      if (onDeleted) onDeleted(); // callback إضافي
 
-      if (deleteType === "doctor") {
-        const { error } = await supabase.from("doctors").delete().eq("id", id);
-        if (error) throw error;
-      } else if (deleteType === "bed") {
-        console.log(`Deleting bed with ID: ${id}`);
-      } else if (deleteType === "nurse") {
-        console.log(`Deleting nurse with ID: ${id}`);
-      }
-
-      if (onDeleted) onDeleted(); // شغّل الكول باك بعد الحذف
       return true;
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error("Delete error:", error.message || error);
       return false;
     }
   };
@@ -77,11 +65,11 @@ const handleDelete = async (id, onDeleteFromUI) => {
         openDeleteDialog,
         closeDeleteDialog,
         handleDelete,
-      }}>
+      }}
+    >
       {props.children}
     </DeleteDialogContext.Provider>
   );
 }
-
 
 export default DeleteDialogProvider;
