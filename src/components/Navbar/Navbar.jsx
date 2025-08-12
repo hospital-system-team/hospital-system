@@ -107,14 +107,6 @@ function Navbar() {
           {darkMode ? <FiSun /> : <FiMoon />}
         </button>
 
-        <div className="relative">
-          <button className="iconsNav text-2xl relative">
-            <FiBell />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full leading-none">
-              0
-            </span>
-          </button>
-        </div>
 
         <div className="relative" ref={dropdownRef}>
           <button
