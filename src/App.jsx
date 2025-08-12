@@ -14,7 +14,6 @@ import SignUp from "./pages/SignUp";
 import AppProviders from "./providers/AppProviders";
 import Analytics from "./pages/Analytics";
 
-// تعريف الراوتر
 const router = createBrowserRouter([
   {
     path: "/signin",
@@ -52,7 +51,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-// مكون التطبيق الرئيسي
+
 function App() {
   return (
     <AppProviders>

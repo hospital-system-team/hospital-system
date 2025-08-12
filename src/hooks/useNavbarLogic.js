@@ -22,6 +22,7 @@ export default function useNavbarLogic() {
     { name: 'Beds', path: '/beds' },
     { name: 'Doctors', path: '/doctors' },
     { name: 'Patients', path: '/patients' },
+    { name: 'Analytics', path: '/analytics' },
   ];
 
   useEffect(() => {
