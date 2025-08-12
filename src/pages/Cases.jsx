@@ -13,6 +13,10 @@ export default function Cases() {
     status: '',
   });
 
+  // 🔍 Search & Filter State
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
   useEffect(() => {
     fetchCases();
   }, []);
@@ -89,6 +93,12 @@ export default function Cases() {
     setShowForm(false);
   }
 
+  // 🧮 Filtered Cases
+  const filteredCases = cases.filter(c =>
+    c.diagnosis.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (statusFilter ? c.status === statusFilter : true)
+  );
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -108,6 +118,27 @@ export default function Cases() {
         )}
       </div>
 
+      {/* 🔍 Search & Filter */}
+      <div className="flex gap-4 mb-4">
+        <input
+          type="text"
+          placeholder="Search by Diagnosis..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border p-2 rounded w-1/2"
+        />
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border p-2 rounded w-1/4"
+        >
+          <option value="">All Status</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+
       <div className="overflow-x-auto rounded-xl shadow">
         <table className="min-w-full text-center border-separate border-spacing-y-2">
           <thead>
@@ -118,7 +149,6 @@ export default function Cases() {
             </tr>
           </thead>
           <tbody>
-            {/* Inline Form Row */}
             {showForm && (
               <tr className="bg-[var(--background-color)] text-[var(--main-color)] rounded-lg">
                 <td className="p-2">
@@ -163,7 +193,7 @@ export default function Cases() {
                   </button>
                   <button
                     onClick={resetForm}
-                    className="bg-[var(--main-color)]  hover:bg-blue-600 text-[var(--background-color)] px-3 py-1 rounded"
+                    className="bg-[var(--main-color)] hover:bg-blue-600 text-[var(--background-color)] px-3 py-1 rounded"
                   >
                     Cancel
                   </button>
@@ -171,9 +201,8 @@ export default function Cases() {
               </tr>
             )}
 
-            {/* Existing Cases Rows */}
-            {cases.length > 0 ? (
-              cases.map((c) => (
+            {filteredCases.length > 0 ? (
+              filteredCases.map((c) => (
                 <tr
                   key={c.id}
                   className="bg-white text-blue-500 hover:bg-blue-50 transition rounded-lg"

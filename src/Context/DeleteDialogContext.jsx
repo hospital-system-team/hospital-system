@@ -1,15 +1,19 @@
+// Context/DeleteDialogContext.jsx
 import { createContext, useState } from "react";
-export const DeleteDialogContext = createContext();
+import supabase from "../Supabase/supabase_config";
 
+export const DeleteDialogContext = createContext();
 
 function DeleteDialogProvider(props) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deleteData, setDeleteData] = useState(null);
   const [deleteType, setDeleteType] = useState("");
+  const [onDeleted, setOnDeleted] = useState(null); // callback
 
-  const openDeleteDialog = (type, data) => {
+  const openDeleteDialog = (type, data, callback) => {
     setDeleteType(type);
     setDeleteData(data);
+    setOnDeleted(() => callback); // نخزن الكول باك
     setIsDeleteDialogOpen(true);
   };
 
@@ -17,20 +21,41 @@ function DeleteDialogProvider(props) {
     setIsDeleteDialogOpen(false);
     setDeleteData(null);
     setDeleteType("");
+    setOnDeleted(null);
   };
-  const handleDelete = async (id) => {
+
+  const handleDelete = async (id, onDeleteFromUI) => {
     try {
-      if (deleteType === "bed") {
-        console.log(`Deleting bed with ID: ${id}`);
-      } else if (deleteType === "nurse") {
-        console.log(`Deleting nurse with ID: ${id}`);
-        
-      }
+      // تفعيل جلسة supabase
+      await supabase.auth.setSession({
+        access_token: localStorage.getItem("access_token"),
+        refresh_token: localStorage.getItem("refresh_token"),
+      });
+
+      // الحذف من الجدول المناسب
+      const table =
+        deleteType === "nurse"
+          ? "nurses"
+          : deleteType === "doctor"
+          ? "doctors"
+          : "beds";
+
+      const { error } = await supabase.from(table).delete().eq("id", id);
+      if (error) throw error;
+
       console.log(`Deleted ${deleteType} with ID: ${id}`);
+
+      // تحديث الواجهة إذا فيه callback
+      if (onDeleteFromUI) onDeleteFromUI(id);
+      if (onDeleted) onDeleted(); // callback إضافي
+
+      return true;
     } catch (error) {
-      console.error("Delete error:", error);
+      console.error("Delete error:", error.message || error);
+      return false;
     }
   };
+
   return (
     <DeleteDialogContext.Provider
       value={{
@@ -39,7 +64,7 @@ function DeleteDialogProvider(props) {
         deleteType,
         openDeleteDialog,
         closeDeleteDialog,
-        handleDelete
+        handleDelete,
       }}
     >
       {props.children}
@@ -47,5 +72,4 @@ function DeleteDialogProvider(props) {
   );
 }
 
-
-export default DeleteDialogProvider
+export default DeleteDialogProvider;

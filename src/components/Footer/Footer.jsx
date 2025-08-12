@@ -2,7 +2,13 @@ import React from 'react';
 
 function Footer() {
   return (
-    <footer className="bg-var(--main-color) text-center text-sm text-gray-600 py-3 mt-10 ">
+    <footer
+      className="text-center text-sm py-3 mt-10 transition-colors duration-300"
+      style={{
+        backgroundColor: 'var(--main-color)',
+        color: 'var(--light-color)',
+      }}
+    >
       © 2025 Hospital Management System. All rights reserved.
     </footer>
   );
