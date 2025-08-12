@@ -8,15 +8,23 @@ import Sidebar from './components/Sidebar/Sidebar';
 
 function Layout() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1 p-5 bg-gray-100">
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar (fixed height full) */}
+      <Sidebar />
+
+      {/* Main content (Navbar + Content + Footer) */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Navbar */}
+        <Navbar />
+
+        {/* Page Content */}
+        <main className="flex-1 overflow-y-auto p-5 bg-gray-100">
           <Outlet />
         </main>
+
+        {/* Footer */}
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 }

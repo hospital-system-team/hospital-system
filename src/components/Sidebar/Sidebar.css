@@ -1,8 +1,25 @@
-.ps-menuitem-root *{
-
-  transition: 0.5s;
+.glow-text {
+  text-shadow:
+    0 0 5px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(59, 130, 246, 0.7),
+    0 0 20px rgba(59, 130, 246, 0.6);
 }
 
- .ps-menuitem-root:hover * {
-  color: var(--main-color);
-} 
+@keyframes glowPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 5px rgba(255, 255, 255, 0.6),
+      0 0 10px rgba(59, 130, 246, 0.5),
+      0 0 20px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 1),
+      0 0 20px rgba(59, 130, 246, 1),
+      0 0 30px rgba(59, 130, 246, 0.9);
+  }
+}
+
+.animate-glow {
+  animation: glowPulse 0.5s ease-in-out infinite;
+}
