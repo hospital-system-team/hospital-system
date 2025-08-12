@@ -29,7 +29,7 @@ function AddDialog({ onAddSuccess }) {
   async function handleSubmit(e) {
     e.preventDefault();// prevent page reload
     let filteredData = {};
-     // Prepare data object based on addType
+    // Prepare data object based on addType
     if (addType === 'nurse') {
       filteredData = {
         name: formData.name,
@@ -61,12 +61,16 @@ function AddDialog({ onAddSuccess }) {
     }
   }
   return (
-    <Dialog open={isAddDialogOpen} onClose={closeAddDialog} className="fixed inset-0 flex items-center justify-center p-4">
-      <DialogPanel className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <DialogTitle className="text-lg font-semibold mb-4">
+    <Dialog
+      open={isAddDialogOpen}
+      onClose={closeAddDialog}
+      className="fixed inset-0 flex items-center justify-center p-4 bg-[rgba(0,0,0,0.6)] backdrop-blur-sm z-50"
+    >
+      <DialogPanel className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md border border-gray-200">
+        <DialogTitle className="text-xl font-semibold mb-6 p-3 bg-[#1E90FF] text-white rounded-md shadow">
           Add {addType === 'nurse' ? 'Nurse' : 'Bed'}
         </DialogTitle>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {addType === 'nurse' && (
             <>
               <input
@@ -75,7 +79,7 @@ function AddDialog({ onAddSuccess }) {
                 placeholder="Name"
                 value={formData.name}
                 onChange={handleChange}
-                className="border p-2 w-full rounded"
+                className="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 required
               />
               <input
@@ -84,17 +88,19 @@ function AddDialog({ onAddSuccess }) {
                 placeholder="Phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="border p-2 w-full rounded"
+                className="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 required
               />
-              <input
-                type="text"
+              <select
                 name="shift"
-                placeholder="Shift"
                 value={formData.shift}
                 onChange={handleChange}
-                className="border p-2 w-full rounded"
-              />
+                className="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              >
+                <option value="">Select Shift</option>
+                <option value="am">Morning (AM)</option>
+                <option value="pm">Evening (PM)</option>
+              </select>
             </>
           )}
 
@@ -106,33 +112,33 @@ function AddDialog({ onAddSuccess }) {
                 placeholder="Room"
                 value={formData.room || ''}
                 onChange={handleChange}
-                className="border p-2 w-full rounded"
+                className="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-[#1E90FF]  transition"
                 required
               />
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="border p-2 w-full rounded"
+                className="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-[#1E90FF] transition"
                 required
               >
-                <option value="">Status</option>
+                <option value="">Select Status</option>
                 <option value="available">Available</option>
                 <option value="occupied">Occupied</option>
               </select>
             </>
           )}
-          <div className="flex justify-end space-x-2">
+          <div className="flex flex-wrap justify-end gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={closeAddDialog}
-              className="px-4 py-2 border rounded"
+              className="flex-grow sm:flex-grow-0 sm:w-[130px] px-5 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="flex-grow sm:flex-grow-0 sm:w-[130px] px-5 py-2 bg-[#1E90FF] text-white rounded-md hover:bg-blue-700 transition text-center"
             >
               Add
             </button>

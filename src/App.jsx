@@ -12,6 +12,7 @@ import Patients from "./pages/Patients";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import AppProviders from "./providers/AppProviders";
+import Analytics from "./pages/Analytics";
 
 // تعريف الراوتر
 const router = createBrowserRouter([
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: "/beds", element: <BedsTable /> },
       { path: "/doctors", element: <Doctors /> },
       { path: "/patients", element: <Patients /> },
+      {path: "/analytics", element: <Analytics />},
     ],
   },
 ]);

@@ -9,11 +9,14 @@ import { DeleteDialogContext } from "../Context/DeleteDialogContext";
 import { ViewDialogContext } from "../Context/ViewDialogContext";
 import AddDialog from "../components/AddDialog";
 import { AddDialogContext } from "../Context/AddDialogContext";
+import { FiSearch } from 'react-icons/fi';
 
 function NursesTable() {
   const [nurses, setNurses] = useState([]);
+  const [filterShift, setFilterShift] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   const { openDialog } = useContext(EditDialogContext);
-  const { openDeleteDialog , closeDeleteDialog , isDeleteDialogOpen } = useContext(DeleteDialogContext);
+  const { openDeleteDialog } = useContext(DeleteDialogContext);
   const { openViewDialog } = useContext(ViewDialogContext);
   const { openAddDialog } = useContext(AddDialogContext);
   const access_token = localStorage.getItem("access_token");
@@ -31,35 +34,79 @@ function NursesTable() {
       console.log('data:', data);
     }
   }
-    useEffect(() => {
+  useEffect(() => {
     fetchNurses();
   }, []);
+  // function to add a new nurse to the UI after successful addition
   const addNurseToUI = (newNurse) => {
-  setNurses((prev) => [newNurse, ...prev]);
-};
+    setNurses((prev) => [newNurse, ...prev]);
+  };
+  // function to remove a nurse from the UI after successful deletion
   const removeNurseFromUI = (id) => {
     setNurses((prev) => prev.filter((nurse) => nurse.id !== id));
   };
+  // function to update a nurse in the UI after successful update
   const updateNurseInUI = (updatedNurse) => {
-  setNurses((prev) => {
-    console.log('prev:', prev, 'updatedNurse:', updatedNurse);
-    return prev.map((nurse) =>
-      nurse.id === updatedNurse.id ? updatedNurse : nurse
-    );
+    setNurses((prev) => {
+      console.log('prev:', prev, 'updatedNurse:', updatedNurse);
+      return prev.map((nurse) =>
+        nurse.id === updatedNurse.id ? updatedNurse : nurse
+      );
+    });
+  };
+  //function to filter nurses based on shift and search term
+  const filteredNurses = nurses.filter((nurse) => {
+    const matchesShift = filterShift === "All" || nurse.shift === filterShift;
+    const matchesSearch = nurse.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesShift && matchesSearch;
   });
-};
   return (
     <section className="flex justify-center p-6">
       <div className="container w-full max-w-5xl rounded-xl p-6 bg-white shadow">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold text-[#1E90FF] ">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
+          <h2 className="text-2xl font-semibold text-[#1E90FF] w-full sm:w-auto">
             Nurses Table
           </h2>
-          <button className=" px-4 py-3 bg-blue-500 text-white rounded-md flex items-center justify-center" onClick={() => openAddDialog('nurse')}>
+          <button
+            className="max-w-full w-[130px] px-4 py-3 bg-blue-500 text-white rounded-md flex items-center justify-center whitespace-nowrap"
+            onClick={() => openAddDialog('nurse')}
+          >
+            <span className="mr-2">Add Nurse</span>
             <IoAddSharp color="white" />
           </button>
         </div>
-        {nurses.length === 0 ? (
+        <div className="mb-4 flex justify-between gap-6 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+            <label
+              htmlFor="shiftFilter"
+              className="font-semibold text-gray-700 min-w-max"
+            >
+              Filter by Shift:
+            </label>
+            <select
+              id="shiftFilter"
+              value={filterShift}
+              onChange={(e) => setFilterShift(e.target.value)}
+              className="max-w-full w-[130px] border border-gray-300 rounded-md pl-0 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#1E90FF]"
+            >
+              <option value="All">All</option>
+              <option value="am">Morning (AM)</option>
+              <option value="pm">Evening (PM)</option>
+            </select>
+          </div>
+          <div className="relative w-full max-w-xl">
+            <input
+              type="text"
+              id="searchInput"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by Name..."
+              className="w-full pl-10 pr-4 py-2 rounded border border-gray-300 bg-white text-black focus:outline-none focus:ring-2 focus:ring-[#1E90FF]"
+            />
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
+        {filteredNurses.length === 0 ? (
           <p className="text-center text-gray-500">No nurses found.</p>
         ) : (
           <div className="overflow-x-auto ">
@@ -73,24 +120,25 @@ function NursesTable() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {nurses && nurses.length > 0 && nurses.map((nurse) =>{ 
+                {filteredNurses.length > 0 && filteredNurses.map((nurse) => {
                   console.log('nursemap:', nurse);
-                  return(<tr key={nurse.id} className="*:text-gray-900 *:first:font-medium *:text-center ">
-                  <td className="px-6 py-2 whitespace-nowrap">{nurse.name}</td>
-                  <td className="px-6 py-2 whitespace-nowrap">{nurse.phone}</td>
-                  <td className="px-6 py-2 whitespace-nowrap">{nurse.shift}</td>
-                  <td className="px-6 py-2 whitespace-wrap flex gap-2 justify-center">
-                    <button className="w-[40px] h-[30px] bg-[#f00] text-white flex items-center justify-center gap-2 px-3 py-2 rounded hover:bg-red-600 cursor-pointer" onClick={() => openDeleteDialog("nurse", nurse)}>
-                      <IoTrashSharp className="text-lg" />
-                    </button>
-                    <button className="w-[40px] h-[30px] bg-[#1E90FF] text-white flex items-center justify-center gap-2 px-3 py-2 rounded hover:bg-[#1e8fffbd] cursor-pointer" onClick={() => openDialog('nurse', nurse)}>
-                      <IoPencil className="text-lg" />
-                    </button>
-                    <button className="w-[40px] h-[30px] bg-[#1E90FF] text-white flex items-center justify-center gap-2 px-3 py-2 rounded hover:bg-[#1e8fffbd] cursor-pointer" onClick={() => openViewDialog(nurse)}>
-                      <IoEyeSharp className="text-lg" />
-                    </button>
-                  </td>
-                </tr>)})}
+                  return (<tr key={nurse.id} className="*:text-gray-900 *:first:font-medium *:text-center ">
+                    <td className="px-6 py-2 whitespace-nowrap">{nurse.name}</td>
+                    <td className="px-6 py-2 whitespace-nowrap">{nurse.phone}</td>
+                    <td className="px-6 py-2 whitespace-nowrap">{nurse.shift}</td>
+                    <td className="px-6 py-2 whitespace-wrap flex gap-2 justify-center">
+                      <button className="w-[40px] h-[30px] bg-[#f00] text-white flex items-center justify-center gap-2 px-3 py-2 rounded hover:bg-red-600 cursor-pointer" onClick={() => openDeleteDialog("nurse", nurse)}>
+                        <IoTrashSharp className="text-lg" />
+                      </button>
+                      <button className="w-[40px] h-[30px] bg-[#1E90FF] text-white flex items-center justify-center gap-2 px-3 py-2 rounded hover:bg-[#1e8fffbd] cursor-pointer" onClick={() => openDialog('nurse', nurse)}>
+                        <IoPencil className="text-lg" />
+                      </button>
+                      <button className="w-[40px] h-[30px] bg-[#1E90FF] text-white flex items-center justify-center gap-2 px-3 py-2 rounded hover:bg-[#1e8fffbd] cursor-pointer" onClick={() => openViewDialog(nurse)}>
+                        <IoEyeSharp className="text-lg" />
+                      </button>
+                    </td>
+                  </tr>)
+                })}
               </tbody>
             </table>
           </div>
@@ -98,7 +146,7 @@ function NursesTable() {
       </div>
       <AddDialog onAddSuccess={addNurseToUI} />
       <EditDialog onUpdateInUI={updateNurseInUI} />
-      <DeleteDialog onDeleteFromUI={removeNurseFromUI}/>
+      <DeleteDialog onDeleteFromUI={removeNurseFromUI} />
       <ViewDialog />
     </section>
   )
