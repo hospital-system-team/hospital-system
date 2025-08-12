@@ -1,15 +1,23 @@
 import { Dialog, DialogPanel } from "@headlessui/react";
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoAddSharp, IoEyeSharp } from "react-icons/io5";
 import supabase from "../Supabase/supabase_config";
-
 
 const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const access_token = localStorage.getItem("access_token");
+  const refresh_token = localStorage.getItem("refresh_token");
+
   const fetchDoctors = async () => {
+    // هنا بنعمل set للـ token
+    await supabase.auth.setSession({
+      access_token: access_token,
+      refresh_token: refresh_token,
+    });
+
     const { data, error } = await supabase.from("doctors").select("*");
     if (error) {
       console.error("Error fetching doctors:", error.message);
@@ -98,7 +106,7 @@ const Doctors = () => {
               <div className="space-y-3 text-gray-700">
                 <div className="w-[300px] h-[300px] overflow-hidden m-auto my-5">
                   <img
-                    src={selectedDoctor.Img}
+                    src={selectedDoctor.img}
                     alt={selectedDoctor.name}
                     className="w-full h-full object-cover rounded-full"
                   />

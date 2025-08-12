@@ -89,7 +89,7 @@ const Patients = () => {
         <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <DialogPanel className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-             <AddPatientForm/>
+            <AddPatientForm/>
           </DialogPanel>
         </div>
       </Dialog>

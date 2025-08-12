@@ -8,21 +8,38 @@ import {
   FaSignOutAlt,
   FaBars,
   FaAmbulance,
+  FaSignInAlt,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import './Sidebar.css'; 
+import './Sidebar.css';
+import supabase from '../../Supabase/supabase_config'; 
 
 const CustomSidebar = () => {
   const [collapsed, setCollapsed] = useState(window.innerWidth < 1024);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
+  // Get user status on mount
   useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    checkAuth();
+
     const handleResize = () => {
       setCollapsed(window.innerWidth < 1024);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Logout handler
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsAuthenticated(false);
+    navigate('/signin');
+  };
 
   return (
     <div className="sidebar-container h-screen overflow-hidden">
@@ -44,7 +61,6 @@ const CustomSidebar = () => {
             Hospital
           </h1>
 
-          {/* Show toggle icon only when expanded */}
           {!collapsed && (
             <FaBars
               className="cursor-pointer text-white text-xl"
@@ -74,12 +90,10 @@ const CustomSidebar = () => {
             },
           }}
         >
-          {/* Toggle icon when collapsed */}
           {collapsed && (
             <MenuItem icon={<FaBars />} onClick={() => setCollapsed(!collapsed)} />
           )}
 
-          {/* Main Navigation */}
           <div className="space-y-1 mb-3 pb-3 border-b border-[var(--background-color)] border-opacity-20">
             <MenuItem icon={<FaHome />} onClick={() => navigate('/')}>
               Dashboard
@@ -89,7 +103,6 @@ const CustomSidebar = () => {
             </MenuItem>
           </div>
 
-          {/* Emergency and Analytics */}
           <div className="space-y-1 mb-3 pb-3 border-b border-[var(--background-color)] border-opacity-20">
             <SubMenu label="Emergency" icon={<FaAmbulance />}>
               <MenuItem onClick={() => navigate('/doctors')}>Doctors</MenuItem>
@@ -103,15 +116,21 @@ const CustomSidebar = () => {
             </MenuItem>
           </div>
 
-          {/* Admin Controls */}
           <div className="space-y-1 pt-2">
             <SubMenu label="Administration" icon={<FaCog />}>
               <MenuItem onClick={() => navigate('/')}>Control 1</MenuItem>
               <MenuItem onClick={() => navigate('/')}>Control 2</MenuItem>
             </SubMenu>
-            <MenuItem icon={<FaSignOutAlt />} onClick={() => navigate('/logout')}>
-              Logout
-            </MenuItem>
+
+            {isAuthenticated ? (
+              <MenuItem icon={<FaSignOutAlt />} onClick={handleLogout}>
+                Logout
+              </MenuItem>
+            ) : (
+              <MenuItem icon={<FaSignInAlt />} onClick={() => navigate('/signin')}>
+                Login
+              </MenuItem>
+            )}
           </div>
         </Menu>
       </Sidebar>

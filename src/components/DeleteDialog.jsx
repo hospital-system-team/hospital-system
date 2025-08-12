@@ -1,6 +1,8 @@
-import React from 'react'
 import { Dialog, DialogPanel } from "@headlessui/react";
-function DeleteDialog({ isDeleteDialogOpen, closeDeleteDialog, type }) {
+import { useContext } from "react";
+import { DeleteDialogContext } from "../Context/DeleteDialogContext";
+function DeleteDialog() {
+  const {isDeleteDialogOpen,deleteData,deleteType,closeDeleteDialog,handleDelete} = useContext(DeleteDialogContext);
   return (
     <Dialog open={isDeleteDialogOpen} onClose={closeDeleteDialog} className="relative z-50">
       <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
@@ -8,7 +10,7 @@ function DeleteDialog({ isDeleteDialogOpen, closeDeleteDialog, type }) {
         <DialogPanel className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl text-center">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Confirm Deletion</h2>
           <p>
-            Are you sure you want to delete this {type === "bed" ? "bed" : "nurse"}?
+            Are you sure you want to delete this {deleteType === "bed" ? "bed" : "nurse"}?
           </p>
           <div className="flex justify-center gap-4 mt-6">
             <button
@@ -19,7 +21,8 @@ function DeleteDialog({ isDeleteDialogOpen, closeDeleteDialog, type }) {
             </button>
             <button
               onClick={() => {
-                handleDelete(selectedNurseId);
+                handleDelete(deleteData?.id);
+                console.log('from button ' ,deleteData?.id);
                 closeDeleteDialog();
               }}
               className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
