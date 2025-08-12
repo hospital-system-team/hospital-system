@@ -7,6 +7,7 @@ function AddDialog({ onAddSuccess }) {
     name: '',
     phone: '',
     shift: '',
+    image: '',
     room: '',
     status: '',
   });
@@ -14,6 +15,8 @@ function AddDialog({ onAddSuccess }) {
     setFormData({
       name: '',
       shift: '',
+      phone: '',
+      image: '',
       room: '',
       status: '',
     });
@@ -35,6 +38,7 @@ function AddDialog({ onAddSuccess }) {
         name: formData.name,
         phone: formData.phone,
         shift: formData.shift,
+        image: formData.image , 
       };
     } else if (addType === 'bed') {
       filteredData = {
@@ -87,6 +91,15 @@ function AddDialog({ onAddSuccess }) {
                 name="phone"
                 placeholder="Phone"
                 value={formData.phone}
+                onChange={handleChange}
+                className="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                required
+              />
+              <input
+                type="text"
+                name="image"
+                placeholder="Image URL"
+                value={formData.image}
                 onChange={handleChange}
                 className="border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 required
