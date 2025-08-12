@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import supabase from "../Supabase/supabase_config";
 import {
-  BarChart,
   Bar,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
+import supabase from "../Supabase/supabase_config";
 
 export default function CasesChart() {
   const [cases, setCases] = useState([]);
@@ -46,13 +46,15 @@ export default function CasesChart() {
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6 w-full">
       <h2 className="text-2xl font-bold text-center mb-6">
         Cases by Diagnosis (Target vs Progress)
       </h2>
 
       <ResponsiveContainer width="100%" height={400}>
-        <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+        <BarChart
+          data={chartData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#444" />
           <XAxis dataKey="diagnosis" stroke="#fff" />
           <YAxis stroke="#fff" />
