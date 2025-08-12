@@ -1,4 +1,4 @@
-import CasesChart from "../Charts/CasesChart";
+import CasesChart from "../../Charts/CasesChart";
 
 export default function Home() {
   return (
