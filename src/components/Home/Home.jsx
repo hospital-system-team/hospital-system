@@ -1,11 +1,12 @@
-import React from 'react'
+import CasesChart from "../../Charts/CasesChart";
 
-function Home() {
+export default function Home() {
   return (
-    <div className='Home'>
-      <h1>test</h1>
+    <div className="space-y-10">
+      <h1 className="text-3xl font-bold text-center text-blue-700">
+        Hospital Dashboard
+      </h1>
+      <CasesChart />
     </div>
-  )
+  );
 }
-
-export default Home
