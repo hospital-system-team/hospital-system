@@ -163,7 +163,7 @@ export default function Cases() {
                   </button>
                   <button
                     onClick={resetForm}
-                    className="bg-[var(--main-color)] hover:bg-gray-200 text-[var(--background-color)] px-3 py-1 rounded"
+                    className="bg-[var(--main-color)]  hover:bg-blue-600 text-[var(--background-color)] px-3 py-1 rounded"
                   >
                     Cancel
                   </button>
