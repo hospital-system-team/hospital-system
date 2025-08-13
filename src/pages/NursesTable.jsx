@@ -62,7 +62,7 @@ function NursesTable() {
   });
   return (
     <section className="flex justify-center p-6">
-      <div className="container w-full max-w-5xl rounded-xl p-6 bg-white shadow">
+      <div className="container w-full max-w-5xl rounded-xl p-6 bg-[var(--light-color)] shadow">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
           <h2 className="text-2xl font-semibold text-[#1E90FF] w-full sm:w-auto">
             Nurses Table
@@ -79,7 +79,7 @@ function NursesTable() {
           <div className="flex items-center gap-3 flex-wrap">
             <label
               htmlFor="shiftFilter"
-              className="font-semibold text-gray-700 min-w-max"
+              className="font-semibold bg-[var(--light-color)] min-w-max"
             >
               Filter by Shift:
             </label>
@@ -122,7 +122,7 @@ function NursesTable() {
               <tbody className="divide-y divide-gray-200">
                 {filteredNurses.length > 0 && filteredNurses.map((nurse) => {
                   console.log('nursemap:', nurse);
-                  return (<tr key={nurse.id} className="*:text-gray-900 *:first:font-medium *:text-center ">
+                  return (<tr key={nurse.id} className="text-[var(--text-color)] *:first:font-medium *:text-center ">
                     <td className="px-6 py-2 whitespace-nowrap">{nurse.name}</td>
                     <td className="px-6 py-2 whitespace-nowrap">{nurse.phone}</td>
                     <td className="px-6 py-2 whitespace-nowrap">{nurse.shift}</td>

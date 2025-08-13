@@ -155,14 +155,14 @@ export default function Cases() {
       </div>
 
       <div className="overflow-x-auto rounded-xl shadow">
-        <table className="min-w-full text-center border-separate border-spacing-y-2">
+        <table className="min-w-full text-center border-separate border-spacing-y-2 ">
           <thead>
-            <tr className="bg-[var(--main-color)] text-[var(--background-color)] rounded-lg">
-              <th className="p-3">Diagnosis</th>
+            <tr className="bg-[var(--main-color)] text-[var(--background-color)]">
+              <th className="p-3 rounded-tl-xl">Patient</th>
+              <th className="p-3 ">Diagnosis</th>
               <th className="p-3">Status</th>
               <th className="p-3">Doctor</th>
-              <th className="p-3">Patient</th>
-              <th className="p-3 rounded-r-xl">Action</th>
+              <th className="p-3 rounded-tr-xl">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -262,12 +262,12 @@ export default function Cases() {
               filteredCases.map((c) => (
                 <tr
                   key={c.id}
-                  className="bg-white text-blue-500 hover:bg-blue-50 transition rounded-lg"
+                  className="bg-[var(--light-color)] text-blue-500 hover:bg-blue-50 transition rounded-lg"
                 >
+                  <td className="p-3">{c.patients?.name || '—'}</td>
                   <td className="p-3">{c.diagnosis}</td>
                   <td className="p-3">{c.status}</td>
                   <td className="p-3">{c.doctors?.name || '—'}</td>
-                  <td className="p-3">{c.patients?.name || '—'}</td>
                   <td className="p-3 flex justify-center gap-2">
                     <button
                       onClick={() => handleEdit(c)}

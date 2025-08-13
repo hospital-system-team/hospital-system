@@ -2,7 +2,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Layout from "./Layout";
-import Home from "./components/Home/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import BedsTable from "./pages/BedsTable";
 import Cases from "./pages/Cases";
@@ -11,8 +10,8 @@ import NursesTable from "./pages/NursesTable";
 import Patients from "./pages/Patients";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import AppProviders from "./providers/AppProviders";
 import Analytics from "./pages/Analytics";
+import Home from "./pages/Home";
 
 const router = createBrowserRouter([
   {
@@ -54,12 +53,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <AppProviders>
       <main>
-        <ToastContainer />
         <RouterProvider router={router} />
       </main>
-    </AppProviders>
   );
 }
 

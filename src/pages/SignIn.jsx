@@ -1,11 +1,12 @@
 // src/pages/SignIn.jsx
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import supabase from "../Supabase/supabase_config";
+import { UserContext } from "../Context/UserContext";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -18,6 +19,9 @@ const SignIn = () => {
   useEffect(() => {
     AOS.init({ duration: 800 });
   }, []);
+
+  let {checkRole}=useContext(UserContext)
+
 
   const onSubmit = async ({ email, password }) => {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -33,6 +37,7 @@ const SignIn = () => {
         // خزّنهم في localStorage
         localStorage.setItem("access_token", access_token);
         localStorage.setItem("refresh_token", refresh_token);
+        checkRole()
       }
 
       navigate("/");

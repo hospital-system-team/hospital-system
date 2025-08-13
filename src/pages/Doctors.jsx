@@ -4,6 +4,7 @@ import DoctorDialog from "../components/Doctor/DoctorDialog";
 import DoctorDialogView from "../components/Doctor/DoctorDialogView";
 import DoctorTable from "../components/Doctor/DoctorTable";
 import { useDoctorsCtx } from "../Context/DoctorContext";
+import PatientBarChart from "../Charts/PatientBarChart";
 
 export default function Doctors() {
   const { doctors, fetchDoctors, openView, openAdd, openEdit, askDelete } =
@@ -25,7 +26,7 @@ export default function Doctors() {
   }, [doctors, search]);
 
   return (
-    <div className="p-6 bg-white rounded-2xl">
+    <div className="p-6 bg-[var(--light-color)] rounded-2xl">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
         <div className="flex gap-2 items-center justify-between">
           <h2 className="text-[20px] font-semibold text-[#1E90FF]">
