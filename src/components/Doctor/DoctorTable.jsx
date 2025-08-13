@@ -1,67 +1,76 @@
+import { useState } from "react";
+import { IoCreateSharp, IoEyeSharp, IoTrashSharp } from "react-icons/io5";
+
 export default function DoctorTable({
   doctors,
   openView,
   openEdit,
   askDelete,
 }) {
+  const [sortAsc, setSortAsc] = useState(true);
+
+  // ترتيب الدكاترة عند الضغط على عمود Name
+  const sortedDoctors = [...doctors].sort((a, b) => {
+    if (!a.name || !b.name) return 0;
+    return sortAsc
+      ? a.name.localeCompare(b.name)
+      : b.name.localeCompare(a.name);
+  });
+
+  const handleSortByName = () => {
+    setSortAsc((prev) => !prev);
+  };
+
   return (
-    <div className="w-full flex justify-center">
-      <div className="overflow-x-auto">
-        <table className="min-w-[800px] border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-          <thead>
-            <tr className="bg-[#1E90FF] text-white">
-              <th className="px-6 py-3 text-left font-medium">Name</th>
-              <th className="px-6 py-3 text-left font-medium">Phone</th>
-              <th className="px-6 py-3 text-left font-medium">Shift</th>
-              <th className="px-6 py-3 text-center font-medium">Action</th>
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-sm text-left rounded-lg overflow-hidden">
+        <thead className="bg-[#1E90FF] text-white">
+          <tr>
+            <th
+              onClick={handleSortByName}
+              className="px-6 py-3 font-medium cursor-pointer select-none">
+              Name {sortAsc ? "▲" : "▼"}
+            </th>
+            <th className="px-6 py-3 font-medium">Phone</th>
+            <th className="px-6 py-3 font-medium">Shift</th>
+            <th className="px-6 py-3 font-medium">Action</th>
+          </tr>
+        </thead>
+        <tbody className="text-[#1E90FF] bg-white divide-y divide-blue-500/40">
+          {sortedDoctors.map((doc) => (
+            <tr
+              key={doc.id}
+              className="hover:bg-[#f0f8ff] transition duration-150">
+              <td className="px-6 py-4">{doc.name}</td>
+              <td className="px-6 py-4">{doc.phone || "—"}</td>
+              <td className="px-6 py-4">
+                {doc.shift === "am"
+                  ? "Morning"
+                  : doc.shift === "pm"
+                  ? "Evening"
+                  : "Unspecified"}
+              </td>
+              <td className="px-6 py-4 flex gap-2">
+                <button
+                  onClick={() => openView(doc)}
+                  className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+                  <IoEyeSharp />
+                </button>
+                <button
+                  onClick={() => openEdit(doc)}
+                  className="p-2 bg-green-500 text-white rounded hover:bg-green-700">
+                  <IoCreateSharp />
+                </button>
+                <button
+                  onClick={() => askDelete("doctor", doc)}
+                  className="p-2 bg-red-500 text-white rounded hover:bg-red-700">
+                  <IoTrashSharp />
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {doctors.length ? (
-              doctors.map((doc) => (
-                <tr
-                  key={doc.id}
-                  className="hover:bg-blue-50 transition-colors duration-150">
-                  <td className="px-6 py-4">{doc.name}</td>
-                  <td className="px-6 py-4">{doc.phone || "—"}</td>
-                  <td className="px-6 py-4">
-                    {doc.shift === "am"
-                      ? "Morning"
-                      : doc.shift === "pm"
-                      ? "Evening"
-                      : "Unspecified"}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <div className="inline-flex gap-2">
-                      <button
-                        onClick={() => openView(doc)}
-                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        View
-                      </button>
-                      <button
-                        onClick={() => openEdit(doc)}
-                        className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => askDelete(doc)}
-                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
-                  No doctors found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
