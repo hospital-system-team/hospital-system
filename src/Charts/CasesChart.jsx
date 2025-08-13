@@ -48,7 +48,7 @@ export default function CasesChart() {
         Cases by Diagnosis (Low / Medium / High)
       </h2>
 
-      <div className="w-full" style={{ minWidth: "400px", height: "300px" }}>
+      <div className="w-full" style={{ maxWidth: "400px", height: "300px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}

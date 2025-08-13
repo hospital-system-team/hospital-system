@@ -57,7 +57,7 @@ function BedsTable() {
   });
   return (
     <section className="flex justify-center p-6">
-      <div className="container w-full max-w-5xl rounded-xl p-6 bg-white shadow">
+      <div className="container w-full max-w-5xl rounded-xl p-6 bg-[var(--light-color)] shadow">
         <div className="flex items-center justify-between flex-wrap mb-4">
           <h2 className="text-2xl font-semibold text-[#1E90FF] ">
             Beds Table
@@ -68,7 +68,7 @@ function BedsTable() {
           </button>
         </div>
         <div className="mb-4 flex items-center gap-3 flex-wrap">
-          <label htmlFor="statusFilter" className="font-semibold text-gray-700 min-w-max">
+          <label htmlFor="statusFilter" className="font-semibold text-[var(--text-color)] min-w-max">
             Filter by Status:
           </label>
           <select
@@ -95,7 +95,7 @@ function BedsTable() {
               {filteredBeds.map((bed) => (
                 <tr
                   key={bed.id}
-                  className="*:text-gray-900 *:first:font-medium *:text-center"
+                  className="text-[var(--text-color)] *:first:font-medium *:text-center"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">{bed.room}</td>
                   <td className="px-6 py-4 whitespace-nowrap">

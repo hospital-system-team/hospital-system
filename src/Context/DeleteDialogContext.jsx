@@ -1,6 +1,7 @@
 // Context/DeleteDialogContext.jsx
 import { createContext, useState } from "react";
 import supabase from "../Supabase/supabase_config";
+import { toast } from "react-toastify";
 
 export const DeleteDialogContext = createContext();
 
@@ -38,12 +39,15 @@ function DeleteDialogProvider(props) {
           ? "nurses"
           : deleteType === "doctor"
           ? "doctors"
-          : "beds";
+          : deleteType === "beds"
+          ?"beds"
+          :"patients"
 
       const { error } = await supabase.from(table).delete().eq("id", id);
       if (error) throw error;
 
-      console.log(`Deleted ${deleteType} with ID: ${id}`);
+      toast.success(`Deleted ${deleteType} successfully with ID: ${id}`);
+
 
       // تحديث الواجهة إذا فيه callback
       if (onDeleteFromUI) onDeleteFromUI(id);
@@ -51,7 +55,7 @@ function DeleteDialogProvider(props) {
 
       return true;
     } catch (error) {
-      console.error("Delete error:", error.message || error);
+        toast.error(error.message);
       return false;
     }
   };

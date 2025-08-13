@@ -36,7 +36,7 @@ export default function DoctorTable({
             <th className="px-6 py-3 font-medium">Action</th>
           </tr>
         </thead>
-        <tbody className="text-[#1E90FF] bg-white divide-y divide-blue-500/40">
+        <tbody className="text-[#1E90FF] divide-y divide-blue-500/40">
           {sortedDoctors.map((doc) => (
             <tr
               key={doc.id}

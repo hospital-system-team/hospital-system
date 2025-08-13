@@ -1,5 +1,8 @@
+import PatientBarChart from "../Charts/PatientBarChart";
 import BedsBarChart from "../components/Charts/BedsBarChart"
 import NursesBarChart from "../components/Charts/NursesBarChart"
+import DoctorsByMonthChart from "../components/Doctor/DoctorsByMonthChart";
+import CasesChart from './../Charts/CasesChart';
 
 
 function Analytics() {
@@ -12,6 +15,15 @@ function Analytics() {
       <div className="mb-8">
         <NursesBarChart />
       </div>
+       <div className="mb-8">
+        <CasesChart/>
+      </div>
+       <div className="mb-8">
+        <DoctorsByMonthChart />
+      </div>
+      <div className="">
+       <PatientBarChart />
+       </div>
     </div>
   )
 }

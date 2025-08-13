@@ -10,6 +10,7 @@ function EditDialog({ onUpdateInUI }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [shift, setShift] = useState('');
+  const[image, setImage] = useState(''); 
   useEffect(() => {
     // Set initial values based on editType and editData
     // If editType is "bed", set bed fields; if "nurse", set nurse fields
@@ -20,6 +21,7 @@ function EditDialog({ onUpdateInUI }) {
     setName(editData.name || '');
     setPhone(editData.phone || '');
     setShift(editData.shift || '');
+    setImage(editData.image || '');
   }
 }, [editData, editType]);
   // Handle form submission
@@ -28,7 +30,7 @@ function EditDialog({ onUpdateInUI }) {
     e.preventDefault();// prevent page reload
     // Prepare the updated item based on editType
     const updatedItem = editType === "nurse"
-      ? { id: editData.id, name, phone, shift }
+      ? { id: editData.id, name, phone, shift, image }
       : { id: editData.id, room: bedRoom, is_occupied: bedStatus === "occupied" };
      // Call the handleEdit function from the context to update in Database
       try {
@@ -67,6 +69,13 @@ function EditDialog({ onUpdateInUI }) {
                   className="w-full border p-2 rounded"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Image URL"
+                  className="w-full border p-2 rounded"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
                 />
                 <select
                   className="w-full border p-2 rounded"
