@@ -1,3 +1,4 @@
+// src/components/AuthStatus.jsx
 import { useEffect, useState } from 'react';
 import { supabase } from '../../Supabase/supabase_config';
 
