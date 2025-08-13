@@ -13,7 +13,6 @@ export default function Cases() {
     status: '',
   });
 
-  // 🔍 Search & Filter State
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
@@ -41,35 +40,26 @@ export default function Cases() {
       return;
     }
 
+    const payload = {
+      diagnosis: formData.diagnosis.trim(),
+      status: formData.status.trim(),
+    };
+
+    let error;
     if (editingId) {
-      const { error } = await supabase
+      ({ error } = await supabase
         .from('cases')
-        .update({
-          diagnosis: formData.diagnosis.trim(),
-          status: formData.status.trim(),
-        })
-        .eq('id', editingId);
-
-      if (error) {
-        console.error('Update error:', error.message);
-      } else {
-        resetForm();
-        fetchCases();
-      }
+        .update(payload)
+        .eq('id', editingId));
     } else {
-      const { error } = await supabase.from('cases').insert([
-        {
-          diagnosis: formData.diagnosis.trim(),
-          status: formData.status.trim(),
-        },
-      ]);
+      ({ error } = await supabase.from('cases').insert([payload]));
+    }
 
-      if (error) {
-        console.error('Insert error:', error.message);
-      } else {
-        resetForm();
-        fetchCases();
-      }
+    if (error) {
+      console.error('Submit error:', error.message);
+    } else {
+      resetForm();
+      fetchCases();
     }
   }
 
@@ -93,16 +83,16 @@ export default function Cases() {
     setShowForm(false);
   }
 
-  // 🧮 Filtered Cases
   const filteredCases = cases.filter(c =>
     c.diagnosis.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (statusFilter ? c.status === statusFilter : true)
   );
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-blue-600">Cases</h2>
+    <div className="p-4 sm:p-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-blue-600">Cases</h2>
         {!showForm && (
           <button
             onClick={() => {
@@ -110,27 +100,27 @@ export default function Cases() {
               setEditingId(null);
               setFormData({ diagnosis: '', status: '' });
             }}
-            className="bg-[var(--main-color)] text-2xl text-[var(--background-color)] p-3 rounded-lg shadow hover:bg-blue-600"
-            title="Add New"
+            className="bg-[var(--main-color)] text-[var(--background-color)] text-lg p-2 sm:p-3 rounded-lg shadow hover:bg-blue-600"
           >
-            <FaPlus />
+            <FaPlus className="inline mr-2" />
+            Add New
           </button>
         )}
       </div>
 
       {/* 🔍 Search & Filter */}
-      <div className="flex gap-4 mb-4">
+      <div className="flex flex-col md:flex-row gap-4 mb-4">
         <input
           type="text"
           placeholder="Search by Diagnosis..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border p-2 rounded w-1/2"
+          className="border p-2 rounded w-full md:w-1/2"
         />
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="border p-2 rounded w-1/4"
+          className="border p-2 rounded w-full md:w-1/4"
         >
           <option value="">All Status</option>
           <option value="low">Low</option>
@@ -139,19 +129,21 @@ export default function Cases() {
         </select>
       </div>
 
-      <div className="overflow-x-auto rounded-xl shadow">
-        <table className="min-w-full text-center border-separate border-spacing-y-2">
+      {/* Table */}
+      <div className="w-full overflow-x-auto rounded-xl shadow">
+        <table className="w-full text-center border-separate border-spacing-y-2">
           <thead>
-            <tr className="bg-[var(--main-color)] text-[var(--background-color)] rounded-lg">
-              <th className="p-3 rounded-l-xl">Diagnosis</th>
+            <tr className="bg-[var(--main-color)] text-[var(--background-color)]">
+              <th className="p-3">Diagnosis</th>
               <th className="p-3">Status</th>
-              <th className="p-3 rounded-r-xl">Action</th>
+              <th className="p-3">Action</th>
             </tr>
           </thead>
           <tbody>
+            {/* Form Row */}
             {showForm && (
-              <tr className="bg-[var(--background-color)] text-[var(--main-color)] rounded-lg">
-                <td className="p-2">
+              <tr className="bg-[var(--background-color)] text-[var(--main-color)]">
+                <td className="p-2 min-w-[150px]">
                   <input
                     type="text"
                     placeholder="Diagnosis"
@@ -163,10 +155,9 @@ export default function Cases() {
                       }))
                     }
                     className="w-full border p-1 rounded"
-                    required
                   />
                 </td>
-                <td className="p-2">
+                <td className="p-2 min-w-[150px]">
                   <select
                     value={formData.status}
                     onChange={(e) =>
@@ -176,7 +167,6 @@ export default function Cases() {
                       }))
                     }
                     className="w-full border p-1 rounded"
-                    required
                   >
                     <option value="">Select Status</option>
                     <option value="low">Low</option>
@@ -184,16 +174,16 @@ export default function Cases() {
                     <option value="high">High</option>
                   </select>
                 </td>
-                <td className="p-2 flex justify-center gap-2">
+                <td className="p-2 flex flex-col sm:flex-row justify-center gap-2 min-w-[180px]">
                   <button
                     onClick={handleSubmit}
-                    className="bg-[var(--main-color)] hover:bg-blue-600 text-[var(--background-color)] px-3 py-1 rounded"
+                    className="bg-[var(--main-color)] hover:bg-blue-600 text-white px-3 py-1 rounded"
                   >
                     {editingId ? 'Update' : 'Add'}
                   </button>
                   <button
                     onClick={resetForm}
-                    className="bg-[var(--main-color)] hover:bg-blue-600 text-[var(--background-color)] px-3 py-1 rounded"
+                    className="bg-gray-300 hover:bg-gray-400 text-black px-3 py-1 rounded"
                   >
                     Cancel
                   </button>
@@ -201,15 +191,16 @@ export default function Cases() {
               </tr>
             )}
 
+            {/* Data Rows */}
             {filteredCases.length > 0 ? (
               filteredCases.map((c) => (
                 <tr
                   key={c.id}
-                  className="bg-white text-blue-500 hover:bg-blue-50 transition rounded-lg"
+                  className="bg-white text-blue-500 hover:bg-blue-50 transition"
                 >
-                  <td className="p-3 rounded-l-xl">{c.diagnosis}</td>
-                  <td className="p-3">{c.status}</td>
-                  <td className="p-3 flex justify-center gap-2 rounded-r-xl">
+                  <td className="p-3">{c.diagnosis}</td>
+                  <td className="p-3 capitalize">{c.status}</td>
+                  <td className="p-3 flex flex-col sm:flex-row justify-center gap-2">
                     <button
                       onClick={() => handleEdit(c)}
                       className="bg-blue-100 hover:bg-blue-200 text-blue-600 p-2 rounded-full"
