@@ -1,57 +1,34 @@
 {
   "name": "hospital-system",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "A modern web-based hospital management system",
+  "main": "index.html",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "start": "live-server",
+    "dev": "live-server --port=3000",
+    "build": "echo 'Build process not configured yet'"
+  },
+  "keywords": [
+    "hospital",
+    "management",
+    "healthcare",
+    "supabase",
+    "web-app"
+  ],
+  "author": "Hospital System Team",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.7",
-    "@reduxjs/toolkit": "^2.8.2",
-    "@supabase/supabase-js": "^2.53.0",
-    "@tailwindcss/vite": "^4.1.11",
-    "aos": "^2.3.4",
-    "axios": "^1.11.0",
-    "chart.js": "^4.5.0",
-    "chartjs-adapter-date-fns": "^3.0.0",
-    "date-fns": "^4.1.0",
-    "generate-react-cli": "^8.4.9",
-    "primeicons": "^7.0.0",
-    "primereact": "^10.9.6",
-    "react": "^19.1.0",
-    "react-chartjs-2": "^5.3.0",
-    "react-dom": "^19.1.0",
-    "react-hook-form": "^7.61.1",
-    "react-icon": "^1.0.0",
-    "react-icons": "^5.5.0",
-    "react-is": "^19.1.1",
-    "react-loader-spinner": "^6.1.6",
-    "react-pro-sidebar": "^1.1.0",
-    "react-redux": "^9.2.0",
-    "react-router-dom": "^7.7.1",
-    "react-select": "^5.10.2",
-    "react-toastify": "^11.0.5",
-    "recharts": "^3.1.2",
-    "sweetalert2": "^11.22.2",
-    "swiper": "^11.2.10"
+    "@supabase/supabase-js": "^2.38.0"
   },
-  "devDependencies": {
-    "@eslint/js": "^9.30.1",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^4.6.0",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.30.1",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
-    "postcss": "^8.5.6",
-    "supabase": "^2.33.9",
-    "tailwindcss": "^4.1.11",
-    "vite": "^7.0.4"
-  }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hospital-system-team/hospital-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hospital-system-team/hospital-system/issues"
+  },
+  "homepage": "https://github.com/hospital-system-team/hospital-system#readme"
 }
